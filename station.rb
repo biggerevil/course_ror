@@ -14,20 +14,22 @@ class Station
     @trains_on_station.delete(train)
   end
 
-  def count_trains
-    # cargo = груз, грузовой
-    cargo_trains_number = 0
-    # commuter = пассажир, пассажирский
-    commuter_trains_number = 0
+  def count_trains(type)
+    array_for_return = []
+
+    puts "\nStart counting:"
+    puts "trains_on_station = #{@trains_on_station}"
 
     @trains_on_station.each do |train|
-      if train.type == 'cargo'
-        cargo_trains_number += 1
-      elsif train.type == 'commuter'
-        commuter_trains_number += 1
+      if train.type == type
+        array_for_return << train
       end
     end
 
-    puts "Cargo trains = #{cargo_trains_number}, Commuter trains = #{commuter_trains_number}"
+    puts "array_for_return = #{array_for_return}"
+    puts "End counting\n\n"
+    array_for_return
+    # @trains_on_station
   end
 end
+

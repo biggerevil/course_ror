@@ -17,6 +17,7 @@ third_route = Route.new(tovar_station, ostank_station)
 # Fill routes with intermediate stations
 first_route.add_station(tovar_station)
 first_route.add_station(lihov_station)
+
 first_route.add_station(ostank_station)
 first_route.delete_station(ostank_station)
 
@@ -39,15 +40,14 @@ puts "Train speed after loseSpeed = #{cargo1239.speed}"
 puts
 
 puts "Wagons of cargo1239: #{cargo1239.wagons_amount}"
-cargo1239.change_wagon(1)
+cargo1239.add_wagon()
 puts "Wagons of cargo1239 after adding: #{cargo1239.wagons_amount}"
-cargo1239.change_wagon(-1)
+cargo1239.remove_wagon()
 puts "Wagons of cargo1239 after decreasing: #{cargo1239.wagons_amount}"
 puts
 
 cargo1239.set_route(first_route)
-print 'Route of cargo1239: '
-cargo1239.route.all_stations
+print "Route of cargo1239 = #{cargo1239.route.all_stations}"
 puts "Current station name of cargo1239 = #{cargo1239.current_station.name}"
 cargo1239.move_forward
 puts "Moved forward more time. Now the current stations is = #{cargo1239.current_station.name}"
@@ -65,8 +65,9 @@ puts
 puts "Current station name of cargo1239 = #{cargo1239.current_station.name}"
 cargo1239.move_back
 puts "Moved back more time. Now the current stations is = #{cargo1239.current_station.name}"
+puts "Array of cargo trains on station #{cargo1239.current_station.name}: = #{cargo1239.current_station.count_trains('cargo')}"
+
 cargo1239.move_back
-cargo1239.current_station.count_trains
 puts "Moved back one more time. Now the current stations is = #{cargo1239.current_station.name}"
 cargo1239.move_back
 puts "Moved back even one more time. Now the current stations is = #{cargo1239.current_station.name}"

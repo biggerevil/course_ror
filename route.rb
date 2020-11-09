@@ -16,12 +16,12 @@ class Route
   end
 
   def all_stations
-    print initial_station.name
-    print ' '
-    @intermediate_stations.each do |station|
-      print station.name
-      print ' '
+    all_stations_array = []
+    all_stations_array << initial_station
+    intermediate_stations.each do |station|
+      all_stations_array << station
     end
-    puts end_station.name
+    all_stations_array << end_station
+    all_stations_array
   end
 end
