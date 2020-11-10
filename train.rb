@@ -33,24 +33,20 @@ class Train
   end
 
   def move_forward
-    all_stations = route.all_stations
-    index_of_current_station = all_stations.index(@current_station)
     # If current station is the last station of the route
-    return if get_next_station.nil?
+    return unless get_next_station
 
     @current_station.remove_train(self)
-    @current_station = all_stations[index_of_current_station + 1]
+    @current_station = get_next_station
     @current_station.add_train(self)
   end
 
   def move_back
-    all_stations = route.all_stations
-    index_of_current_station = all_stations.index(@current_station)
     # If current station is the first station of the route
-    return if get_previous_station.nil?
+    return unless get_previous_station
 
     @current_station.remove_train(self)
-    @current_station = all_stations[index_of_current_station - 1]
+    @current_station = get_previous_station
     @current_station.add_train(self)
   end
 
@@ -59,7 +55,7 @@ class Train
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the first station of the route
     return if index_of_current_station.zero?
-    return if index_of_current_station.nil?
+    return unless index_of_current_station
 
     all_stations[index_of_current_station - 1]
   end
@@ -69,7 +65,7 @@ class Train
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the last station of the route
     return if index_of_current_station == (all_stations.length - 1)
-    return if index_of_current_station.nil?
+    return unless index_of_current_station
 
     all_stations[index_of_current_station + 1]
   end
