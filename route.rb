@@ -16,12 +16,6 @@ class Route
   end
 
   def all_stations
-    all_stations_array = []
-    all_stations_array << initial_station
-    intermediate_stations.each do |station|
-      all_stations_array << station
-    end
-    all_stations_array << end_station
-    all_stations_array
+    all_stations_array = [initial_station, *intermediate_stations, end_station]
   end
 end

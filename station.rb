@@ -15,21 +15,7 @@ class Station
   end
 
   def count_trains(type)
-    array_for_return = []
-
-    puts "\nStart counting:"
-    puts "trains_on_station = #{@trains_on_station}"
-
-    @trains_on_station.each do |train|
-      if train.type == type
-        array_for_return << train
-      end
-    end
-
-    puts "array_for_return = #{array_for_return}"
-    puts "End counting\n\n"
-    array_for_return
-    # @trains_on_station
+    trains_on_station.filter { |train| train == type }
   end
 end
 

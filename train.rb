@@ -34,9 +34,7 @@ class Train
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the last station of the route
-    if index_of_current_station == (all_stations.length - 1)
-      return
-    elsif index_of_current_station == -1
+    if get_next_station == nil
       return
     end
     @current_station.remove_train(self)
@@ -48,9 +46,7 @@ class Train
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the first station of the route
-    if index_of_current_station == 0
-      return
-    elsif index_of_current_station == -1
+    if get_previous_station == nil
       return
     end
     @current_station.remove_train(self)
