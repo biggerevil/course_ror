@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Train
   attr_reader :wagons_amount, :speed, :route, :current_station, :type
 
@@ -8,11 +10,11 @@ class Train
     @speed = 0
   end
 
-  def add_wagon()
+  def add_wagon
     @wagons_amount += 1
   end
 
-  def remove_wagon()
+  def remove_wagon
     @wagons_amount -= 1
   end
 
@@ -34,9 +36,8 @@ class Train
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the last station of the route
-    if get_next_station == nil
-      return
-    end
+    return if get_next_station.nil?
+
     @current_station.remove_train(self)
     @current_station = all_stations[index_of_current_station + 1]
     @current_station.add_train(self)
@@ -46,9 +47,8 @@ class Train
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the first station of the route
-    if get_previous_station == nil
-      return
-    end
+    return if get_previous_station.nil?
+
     @current_station.remove_train(self)
     @current_station = all_stations[index_of_current_station - 1]
     @current_station.add_train(self)
@@ -58,11 +58,9 @@ class Train
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the first station of the route
-    if index_of_current_station == 0
-      return
-    elsif index_of_current_station == -1
-      return
-    end
+    return if index_of_current_station.zero?
+    return if index_of_current_station.nil?
+
     all_stations[index_of_current_station - 1]
   end
 
@@ -70,11 +68,9 @@ class Train
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the last station of the route
-    if index_of_current_station == (all_stations.length - 1)
-      return
-    elsif index_of_current_station == -1
-      return
-    end
-    current_station = all_stations[index_of_current_station + 1]
+    return if index_of_current_station == (all_stations.length - 1)
+    return if index_of_current_station.nil?
+
+    all_stations[index_of_current_station + 1]
   end
 end

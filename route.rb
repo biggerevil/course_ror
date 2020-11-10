@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Route
   attr_reader :initial_station, :end_station, :intermediate_stations
 
@@ -16,6 +18,6 @@ class Route
   end
 
   def all_stations
-    all_stations_array = [initial_station, *intermediate_stations, end_station]
+    [initial_station, *intermediate_stations, end_station]
   end
 end

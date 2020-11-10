@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Station
   attr_reader :trains_on_station, :name
 
@@ -18,4 +20,3 @@ class Station
     trains_on_station.filter { |train| train == type }
   end
 end
-

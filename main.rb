@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 load 'train.rb'
 load 'station.rb'
 load 'route.rb'
@@ -29,8 +31,6 @@ third_route.add_station(hovr_station)
 # train
 # def initialize(number, type, wagonsAmount)
 cargo1239 = Train.new(1239, 'cargo', 10)
-comm482 = Train.new(482, 'comm', 5)
-comm983 = Train.new(983, 'comm', 7)
 
 puts "Train initial speed = #{cargo1239.speed}"
 cargo1239.gain_speed
@@ -40,13 +40,14 @@ puts "Train speed after loseSpeed = #{cargo1239.speed}"
 puts
 
 puts "Wagons of cargo1239: #{cargo1239.wagons_amount}"
-cargo1239.add_wagon()
+cargo1239.add_wagon
 puts "Wagons of cargo1239 after adding: #{cargo1239.wagons_amount}"
-cargo1239.remove_wagon()
+cargo1239.remove_wagon
 puts "Wagons of cargo1239 after decreasing: #{cargo1239.wagons_amount}"
 puts
 
 cargo1239.set_route(first_route)
+
 print "Route of cargo1239 = #{cargo1239.route.all_stations}"
 puts "Current station name of cargo1239 = #{cargo1239.current_station.name}"
 cargo1239.move_forward
@@ -65,8 +66,6 @@ puts
 puts "Current station name of cargo1239 = #{cargo1239.current_station.name}"
 cargo1239.move_back
 puts "Moved back more time. Now the current stations is = #{cargo1239.current_station.name}"
-puts "Array of cargo trains on station #{cargo1239.current_station.name}: = #{cargo1239.current_station.count_trains('cargo')}"
-
 cargo1239.move_back
 puts "Moved back one more time. Now the current stations is = #{cargo1239.current_station.name}"
 cargo1239.move_back
