@@ -1,13 +1,26 @@
 require 'ostruct'
+require_relative 'interface_data'
 
 class Interface
   def initialize
-    # Вообще данные должны храниться не в интерфейсе, но об этом
-    # не было сказано в задании, так что оставляю всё так
-    @stations = []
-    @routes = []
-    @trains = []
+    interface_data = InterfaceData.new
+    @stations = interface_data.stations
+    @routes = interface_data.routes
+    @trains = interface_data.trains
     @commands = create_hash_with_functions
+  end
+
+  def start
+    loop do
+      puts "\nВыберите команду:"
+      print_commands
+      print 'Номер команды: '
+      entered_number = gets.to_i
+
+      break if entered_number == -1
+
+      execute_command_with_index(entered_number)
+    end
   end
 
   def execute_command_with_index(index)
@@ -19,7 +32,16 @@ class Interface
     @commands.each do |number_of_command, struct|
       puts "#{number_of_command} = #{struct.name}"
     end
-    nil
+  end
+
+  def seed
+    seed = [2, 1, 1, 3, 4, 7, 8, 9]
+
+    seed.each do |entered_from_seed|
+      puts
+      execute_command_with_index(entered_from_seed)
+    end
+    puts
   end
 
   protected
@@ -78,39 +100,10 @@ class Interface
     case entered_number
     when 1
       create_route
-
     when 2
-      puts 'Выберите маршрут:'
-      print_routes
-      route_index = gets.to_i
-
-      stations_copy = @stations.dup
-      @routes[route_index].all_stations.each do |station|
-        stations_copy.delete(station)
-      end
-
-      puts 'Выберите станцию:'
-      counter = 0
-      stations_copy.each do |station|
-        puts "#{counter} - #{station.name}"
-      end
-      station_to_add_index = gets.to_i
-      @routes[route_index].add_station(stations_copy[station_to_add_index])
-      puts 'Станция добавлена!'
-
+      read_and_add_station_to_route
     when 3
-      puts 'Выберите маршрут:'
-      print_routes
-      route_index = gets.to_i
-
-      puts 'Выберите станцию для удаления'
-      counter = 0
-      @route[route_index].intermediate_stations.each do |station|
-        puts "#{counter} - #{station.name}"
-      end
-      station_to_delete_index = gets.to_i
-      @route[route_index].intermediate_stations.delete_at(station_to_delete_index)
-      puts 'Станция убрана!'
+      choose_and_delete_station_from_route
     end
   end
 
@@ -134,7 +127,7 @@ class Interface
       new_cargo_car = CargoCar.new
       @trains[train_index].add_car(new_cargo_car)
     when :comm
-      new_comm_car = CommCar.new
+      new_comm_car = CommuterCar.new
       @trains[train_index].add_car(new_comm_car)
     end
     puts 'Вагон добавлен!'
@@ -197,6 +190,7 @@ class Interface
         print ", #{station.name}"
       end
       counter += 1
+      puts
     end
   end
 
@@ -240,6 +234,43 @@ class Interface
     resulting_struct.name = name
     resulting_struct.command = command
     resulting_struct
+  end
+
+  def read_and_add_station_to_route
+    puts 'Выберите маршрут:'
+    print_routes
+    route_index = gets.to_i
+
+    stations_copy = @stations.dup
+    @routes[route_index].all_stations.each do |station|
+      stations_copy.delete(station)
+    end
+
+    puts 'Выберите станцию:'
+    counter = 0
+    stations_copy.each do |station|
+      puts "#{counter} - #{station.name}"
+      counter += 1
+    end
+    station_to_add_index = gets.to_i
+    @routes[route_index].add_station(stations_copy[station_to_add_index])
+    puts 'Станция добавлена!'
+  end
+
+  def choose_and_delete_station_from_route
+    puts 'Выберите маршрут:'
+    print_routes
+    route_index = gets.to_i
+
+    puts 'Выберите станцию для удаления:'
+    counter = 0
+    @routes[route_index].intermediate_stations.each do |station|
+      puts "#{counter} - #{station.name}"
+      counter += 1
+    end
+    station_to_delete_index = gets.to_i
+    @routes[route_index].intermediate_stations.delete_at(station_to_delete_index)
+    puts 'Станция убрана!'
   end
 
   def print_error
