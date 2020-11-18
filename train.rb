@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 class Train
-  attr_reader :wagons_amount, :speed, :route, :current_station, :type
+  attr_reader :speed, :route, :current_station, :type, :cars, :number
 
-  def initialize(number, type, wagons_amount)
+  def initialize(number, type)
     @number = number
     @type = type
-    @wagons_amount = wagons_amount
     @speed = 0
+    @cars = []
   end
 
-  def add_wagon
-    @wagons_amount += 1
+  def add_car(car)
+    cars.push(car) unless car.type != type
   end
 
-  def remove_wagon
-    @wagons_amount -= 1
+  def remove_car
+    cars.pop
   end
 
   def gain_speed
@@ -26,7 +26,7 @@ class Train
     @speed = 0
   end
 
-  def set_route(route)
+  def route=(route)
     @route = route
     @current_station = route.initial_station
     @current_station.add_train(self)
@@ -34,23 +34,23 @@ class Train
 
   def move_forward
     # If current station is the last station of the route
-    return unless get_next_station
+    return unless next_station
 
     @current_station.remove_train(self)
-    @current_station = get_next_station
+    @current_station = next_station
     @current_station.add_train(self)
   end
 
   def move_back
     # If current station is the first station of the route
-    return unless get_previous_station
+    return unless previous_station
 
     @current_station.remove_train(self)
-    @current_station = get_previous_station
+    @current_station = previous_station
     @current_station.add_train(self)
   end
 
-  def get_previous_station
+  def previous_station
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the first station of the route
@@ -60,7 +60,7 @@ class Train
     all_stations[index_of_current_station - 1]
   end
 
-  def get_next_station
+  def next_station
     all_stations = route.all_stations
     index_of_current_station = all_stations.index(@current_station)
     # If current station is the last station of the route
