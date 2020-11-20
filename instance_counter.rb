@@ -10,7 +10,7 @@ module InstanceCounter
     attr_accessor :instance_counter
 
     def instances
-      @instance_counter
+      @instance_counter ||= 0
     end
   end
 
@@ -18,7 +18,7 @@ module InstanceCounter
     protected
 
     def register_instance
-      self.class.instance_counter = 0 if self.class.instance_counter.nil?
+      self.class.instance_counter ||= 0
       self.class.instance_counter += 1
     end
   end
