@@ -1,13 +1,27 @@
 # frozen_string_literal: true
 
+require_relative 'vendor'
+require_relative 'instance_counter'
+
 class Train
+  include Vendor
+  include InstanceCounter
+
   attr_reader :speed, :route, :current_station, :type, :cars, :number
+
+  @@all_created_trains = {}
 
   def initialize(number, type)
     @number = number
     @type = type
     @speed = 0
     @cars = []
+    @@all_created_trains[number] = self
+    register_instance
+  end
+
+  def self.find(required_number)
+    @@all_created_trains.select { |train_number| train_number == required_number }.first
   end
 
   def add_car(car)
