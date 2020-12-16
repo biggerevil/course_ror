@@ -12,6 +12,7 @@ class Station
   def initialize(name)
     @name = name
     @trains_on_station = []
+    validate!
     @@all_created_stations << self
     register_instance
   end
@@ -30,5 +31,18 @@ class Station
 
   def count_trains(type)
     trains_on_station.filter { |train| train == type }
+  end
+
+  def valid?
+    validate!
+    true
+  rescue RuntimeError
+    false
+  end
+
+  protected
+
+  def validate!
+    raise 'Имя не может быть пустым!' if @name == ''
   end
 end

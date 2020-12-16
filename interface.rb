@@ -67,15 +67,19 @@ class Interface
 
   def create_station_command
     print 'Введите название станции: '
-    station_name = gets
+    station_name = gets.chomp
     new_station = Station.new(station_name)
     @stations.push(new_station)
     puts 'Станция создана!'
+  rescue RuntimeError => e
+    puts "Было выброшено исключение - #{e.message}"
+    puts 'Попробуйте снова!'
+    retry
   end
 
   def create_train_command
     print 'Введите номер поезда: '
-    train_number = gets.to_i
+    train_number = gets.chomp
     puts
     puts 'Какой тип будет у поезда?'
     puts '1 - пассажирский'
@@ -89,7 +93,11 @@ class Interface
       new_comm_train = CommuterTrain.new(train_number)
       @trains.push(new_comm_train)
     end
-    puts 'Поезд создан!'
+    puts "Поезд с номером #{train_number} создан!"
+  rescue RuntimeError => e
+    puts "Не удалось создать поезд - #{e.message}"
+    puts 'Попробуйте снова!'
+    retry
   end
 
   def manage_stations_command

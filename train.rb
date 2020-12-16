@@ -7,6 +7,8 @@ class Train
   include Vendor
   include InstanceCounter
 
+  NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i.freeze
+
   attr_reader :speed, :route, :current_station, :type, :cars, :number
 
   @@all_created_trains = {}
@@ -16,6 +18,7 @@ class Train
     @type = type
     @speed = 0
     @cars = []
+    validate!
     @@all_created_trains[number] = self
     register_instance
   end
@@ -82,5 +85,19 @@ class Train
     return unless index_of_current_station
 
     all_stations[index_of_current_station + 1]
+  end
+
+  def valid?
+    validate!
+    true
+  rescue RuntimeError
+    false
+  end
+
+  protected
+
+  def validate!
+    raise 'Вы не ввели номер поезда!' if @number == ''
+    raise "Введённый номер #{@number} не соответствует формату." if @number !~ NUMBER_FORMAT
   end
 end
