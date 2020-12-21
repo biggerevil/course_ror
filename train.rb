@@ -94,6 +94,10 @@ class Train
     false
   end
 
+  def for_each(&block)
+    @cars.each { |car| block.call(car) } if block_given?
+  end
+
   protected
 
   def validate!

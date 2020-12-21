@@ -61,6 +61,9 @@ class Interface
       '7' => create_struct('Переместить поезд', method(:move_command)),
       '8' => create_struct('Посмотреть список станций', method(:show_stations_command)),
       '9' => create_struct('Посмотреть список поездов на станции', method(:show_trains_on_station)),
+      '10' => create_struct('Вывести список вагонов у поезда', method(:show_cars_of_train)),
+      '11' => create_struct('Занять место в пассажирском вагоне', method(:take_place_in_car)),
+      '12' => create_struct('Занять объём в грузовом вагоне', method(:take_capacity_in_car)),
       '-1' => create_struct('Остановить программу', method(:print_error))
     }
   end
@@ -87,11 +90,11 @@ class Interface
     entered_number = gets.to_i
     case entered_number
     when 1
-      new_cargo_train = CargoTrain.new(train_number)
-      @trains.push(new_cargo_train)
-    when 2
       new_comm_train = CommuterTrain.new(train_number)
       @trains.push(new_comm_train)
+    when 2
+      new_cargo_train = CargoTrain.new(train_number)
+      @trains.push(new_cargo_train)
     end
     puts "Поезд с номером #{train_number} создан!"
   rescue RuntimeError => e
@@ -132,15 +135,21 @@ class Interface
     puts 'Выберите поезд:'
     print_trains
     train_index = gets.to_i
+    print 'Введите номер поезда: '
+    car_name = gets.to_i
     case @trains[train_index].type
     when :cargo
-      new_cargo_car = CargoCar.new
+      print 'Введите объём вагона: '
+      train_capacity = gets.to_i
+      new_cargo_car = CargoCar.new(car_name, train_capacity)
       @trains[train_index].add_car(new_cargo_car)
     when :comm
-      new_comm_car = CommuterCar.new
+      print 'Введите кол-во мест в вагоне: '
+      seats_amount = gets.to_i
+      new_comm_car = CommuterCar.new(car_name, seats_amount)
       @trains[train_index].add_car(new_comm_car)
     end
-    puts 'Вагон добавлен!'
+    puts "Вагон с номером #{car_name} добавлен к поезду #{@trains[train_index].number}!"
   end
 
   def remove_car_from_train_command
@@ -181,9 +190,10 @@ class Interface
     station_index = gets.to_i
     puts
     puts "Поезда на станции #{@stations[station_index].name.strip}:"
-    @stations[station_index].trains_on_station.each do |train_on_station|
-      print train_on_station.number
-    end
+    block = proc { |train|
+      puts("Поезд, номер - #{train.number}, тип - #{train.type}, кол-во вагонов - #{train.cars.length}")
+    }
+    @stations[station_index].for_each(&block)
     puts
   end
 
@@ -281,6 +291,70 @@ class Interface
     station_to_delete_index = gets.to_i
     @routes[route_index].intermediate_stations.delete_at(station_to_delete_index)
     puts 'Станция убрана!'
+  end
+
+  def show_cars_of_train
+    puts 'Выберите поезд:'
+    print_trains
+    train_index = gets.to_i
+    train = @trains[train_index]
+    block = proc { |car|
+      if car.type == :comm
+        puts("Занято #{car.taken_seats} из #{car.seats_amount} мест")
+      else
+        puts("Занято #{car.taken_capacity} ед. объёма из #{car.capacity}")
+      end
+    }
+    train.for_each(&block)
+  end
+
+  def take_place_in_car
+    comm_trains = []
+    @trains.each { |train| comm_trains.push(train) if train.type == :comm }
+
+    puts
+    puts 'Список поездов:'
+    counter = 0
+    comm_trains.each { |comm_train| puts "#{counter} - #{comm_train.number}" }
+    print 'Выберите номер поезда, в котором вы хотите занять место: '
+    comm_train_id = gets.to_i
+
+    puts
+    puts 'Список вагонов:'
+    counter = 0
+    comm_trains[comm_train_id].for_each { |car| puts "#{counter} - #{car.num}"; counter += 1 }
+    print 'Выберите номер вагона, в котором вы хотели бы занять место: '
+    car_id = gets.to_i
+    comm_trains[comm_train_id].cars[car_id].take_seat
+    print "Вы заняли место в вагоне #{comm_trains[comm_train_id].cars[car_id].num}"
+    puts " поезда #{comm_trains[comm_train_id].number}"
+  end
+
+  def take_capacity_in_car
+    cargo_trains = []
+    @trains.each { |train| cargo_trains.push(train) if train.type == :cargo }
+
+    puts
+    puts 'Список поездов:'
+    counter = 0
+    cargo_trains.each { |cargo_train| puts "#{counter} - #{cargo_train.number}"; counter += 1 }
+    print 'Выберите номер поезда, в котором вы хотите занять объём: '
+    cargo_train_id = gets.to_i
+
+    puts
+    puts 'Список вагонов:'
+    counter = 0
+    block = proc { |car| puts "#{counter} - #{car.num}"; counter += 1 }
+    cargo_trains[cargo_train_id].for_each(&block)
+    print 'Выберите номер вагона, в котором вы хотели бы занять объём: '
+    car_id = gets.to_i
+
+    print 'Введите объём, который вы хотите занять: '
+    capacity_to_take = gets.to_i
+    cargo_trains[cargo_train_id].cars[car_id].take_capacity(capacity_to_take)
+    print "Вы заняли #{capacity_to_take} ед. объёма"
+    print " в вагоне #{cargo_trains[cargo_train_id].cars[car_id].num}"
+    puts " поезда #{cargo_trains[cargo_train_id].number}"
   end
 
   def print_error

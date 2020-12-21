@@ -4,6 +4,9 @@ require_relative 'vendor'
 
 class Car
   include Vendor
+  attr_reader :num, :type
 
-  attr_reader :type
+  def initialize(num)
+    @num = num
+  end
 end
