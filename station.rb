@@ -10,12 +10,13 @@ class Station
 
   attr_reader :trains_on_station, :name
 
+  validate :name, :presence
+
   @@all_created_stations = []
 
   def initialize(name)
     @name = name
     @trains_on_station = []
-    self.class.validate :name, :presence
     validate!
     @@all_created_stations << self
     register_instance

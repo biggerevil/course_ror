@@ -13,6 +13,9 @@ class Train
 
   attr_reader :speed, :route, :current_station, :type, :cars, :number
 
+  validate :number, :presence
+  validate :number, :format, /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
+
   @@all_created_trains = {}
 
   def initialize(number, type)
@@ -20,7 +23,6 @@ class Train
     @type = type
     @speed = 0
     @cars = []
-    self.class.validate :number, :presence
     self.class.validate :number, :format, /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
     validate!
     @@all_created_trains[number] = self
