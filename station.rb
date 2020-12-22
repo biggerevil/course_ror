@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require_relative 'instance_counter'
+require_relative 'accessors'
+require_relative 'validation'
 
 class Station
   include InstanceCounter
+  include Validation
 
   attr_reader :trains_on_station, :name
 
@@ -12,6 +15,7 @@ class Station
   def initialize(name)
     @name = name
     @trains_on_station = []
+    self.class.validate :name, :presence
     validate!
     @@all_created_stations << self
     register_instance
@@ -42,11 +46,5 @@ class Station
 
   def for_each(&block)
     @trains_on_station.each { |train| block.call(train) } if block_given?
-  end
-
-  protected
-
-  def validate!
-    raise 'Имя не может быть пустым!' if @name == ''
   end
 end
