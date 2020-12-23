@@ -2,14 +2,19 @@
 
 require_relative 'vendor'
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Train
   include Vendor
   include InstanceCounter
+  include Validation
 
   NUMBER_FORMAT = /^[a-z0-9]{3}-?[a-z0-9]{2}$/i.freeze
 
   attr_reader :speed, :route, :current_station, :type, :cars, :number
+
+  validate :number, :presence
+  validate :number, :format, /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
 
   @@all_created_trains = {}
 
@@ -18,6 +23,7 @@ class Train
     @type = type
     @speed = 0
     @cars = []
+    self.class.validate :number, :format, /^[a-z0-9]{3}-?[a-z0-9]{2}$/i
     validate!
     @@all_created_trains[number] = self
     register_instance
@@ -96,12 +102,5 @@ class Train
 
   def for_each(&block)
     @cars.each { |car| block.call(car) } if block_given?
-  end
-
-  protected
-
-  def validate!
-    raise 'Вы не ввели номер поезда!' if @number == ''
-    raise "Введённый номер #{@number} не соответствует формату." if @number !~ NUMBER_FORMAT
   end
 end
